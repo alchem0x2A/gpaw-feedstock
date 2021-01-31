@@ -1,0 +1,68 @@
+name: Build and upload to anaconda
+
+on:
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Manual input tags' 
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest",]
+        python-version: [3.6, 3.7, 3.8]
+        
+    steps:
+      - name: setup environment
+        uses: actions/checkout@v2
+        
+      - name: setup miniconda and activate base
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: alchem0x2a, conda-forge, defaults
+          channel-priority: true
+          auto-activate-base: true
+          activate-environment: ""
+#       - name: test 
+#         env:
+#           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+#         shell: bash -l -x {0}
+#         run: |
+#            echo ${ANACONDA_API_TOKEN}
+
+          
+      - name: Prepare conda
+        shell: bash -l {0}
+        run: |
+          conda info
+          conda install conda-build anaconda-client 
+          
+      - name: verify anaconda install
+        shell: bash -l {0}
+        run: |   
+          conda list
+          which anaconda
+          
+      - name: Build conda image
+        shell: bash -l {0}
+        run: |
+          conda build -c alchem0x2a --output-folder . recipe
+
+      - name: Upload conda image
+        env:
+          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        shell: bash -l {0}
+        run: |
+          anaconda -t ${ANACONDA_API_TOKEN} upload */gpaw-vdw*.tar.bz2
+ 
+          
+    
+          
+          
+        
+  

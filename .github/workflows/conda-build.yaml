@@ -1,0 +1,42 @@
+name: Conda build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest",]
+        python-version: [3.6, 3.7, 3.8]
+        
+    steps:
+      - name: setup environment
+        uses: actions/checkout@v2
+        
+      - name: setup miniconda and activate base
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: alchem0x2a, conda-forge, defaults
+          channel-priority: true
+          auto-activate-base: true
+          activate-environment: ""
+          
+          
+          
+      - name: Prepare conda
+        shell: bash -l {0}
+        run: |
+          conda info
+          conda install conda-build
+          
+      - name: Try build conda image
+        shell: bash -l {0}
+        run: |
+          conda build recipe
+    
+          
+          
+        
+  
