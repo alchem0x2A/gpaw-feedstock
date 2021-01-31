@@ -6,13 +6,14 @@ mpicompiler = 'mpicc'  # use None if you don't want to build a gpaw-python
 mpilinker = 'mpicc'
 scalapack = True
 fftw = True
-libraries += ['scalapack', 'fftw3', 'blas']
+libvdwxc = True
+libraries += ['scalapack', 'fftw3', 'blas', "vdwxc", ]
               #'scalapack-openmpi',
               #'blacsCinit-openmpi',
               #'blacs-openmpi']
 define_macros += [('GPAW_NO_UNDERSCORE_CBLACS', '1')]
 define_macros += [('GPAW_NO_UNDERSCORE_CSCALAPACK', '1')]
-extra_link_args += ['-Wl,-rpath=$PREIFX/lib']
+extra_link_args += ['-Wl,-rpath=$PREFIX/lib']
 
 if 'xc' not in libraries:
     libraries.append('xc')
