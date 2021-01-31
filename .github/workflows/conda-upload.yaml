@@ -27,7 +27,7 @@ jobs:
           channels: alchem0x2a, conda-forge, defaults
           channel-priority: true
           auto-activate-base: true
-          activate-environment: ""
+          activate-environment: "conda-builder"
 #       - name: test 
 #         env:
 #           ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
