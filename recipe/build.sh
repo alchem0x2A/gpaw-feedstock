@@ -13,13 +13,15 @@ libraries += ['scalapack', 'fftw3', 'blas', "vdwxc", ]
               #'blacs-openmpi']
 define_macros += [('GPAW_NO_UNDERSCORE_CBLACS', '1')]
 define_macros += [('GPAW_NO_UNDERSCORE_CSCALAPACK', '1')]
-extra_link_args += ['-Wl,-rpath=$PREFIX/lib']
 
 if 'xc' not in libraries:
     libraries.append('xc')
-
 EOF
 
+# For some reason macOS version clang does not recognize -rpath
+if [ "$(uname)" == "Linux" ]; then
+    echo "extra_link_args += ['-Wl,-rpath=$PREFIX/lib']" >> siteconfig.py
+fi
 python -m pip install . --no-deps -vv
 # gpaw install-data --no-register $PREFIX/share
 
